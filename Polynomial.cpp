@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cmath>
 #include <string>
 #include <vector>
 #include "Polynomial.h"
@@ -19,130 +20,150 @@ Polynomial::Polynomial(Term* values, int size)
 }
 
 
-// Polynomial::Polynomial(string equation)
-// {
-//     // TO DO: HANDLE CONSTANT CASES SUCH AS : x^2 + 1 or 1 + x^2
-//     // MAKE LOGIC MORE READABLE
-//     // SORT THE ARRAYS TO MAKE COFF AND POW DESCENDING
-//     // IMPROVE DISPLAY FUNCTION
-
-//     //  x^2 - 2 + x  (start to +-,+- to end,between signs +-   +-)
-//     //  2 - x^2
-//     //  x^2 - 2
-//     //  x^2 + 2x^3 + 2 - x^2
-
-
-//     /*The  purpose of this function is to extract coeffecients and power 
-//     from a string.
+Polynomial::Polynomial(string equation)
+{
+    // PROBLEMS AT THE MOMENT
+    // cannot handle '-' at the start
+    // cannot handle constant
+    // when sign comes before ^
     
-//     The convience of this that user can freely enter a polynomial
-//     let's say 2x^5 - 3x^8 - 3x
-//     then we can extract coff : [2,-3,-3], pow : [5,8,1]*/
-
 //     /* idea behind the logic
 
 //     we can use string substr function to extract data, but
-//     we need position and length of coeffecients and power
+//     we need position and length of coeffecients and exponent
 //     so we use one variable to hold position and other to hold length
 
+// A term is always between
+// +-       to   \0
+// +-       to   +-
+// start    to   +-
+// start    to   \0
 
-//     for coeffecients, 
-//     look between
-//     start and x
-//     +- to x
+// A coefficient is always between
+// start   to   x
+// +-      to   x
+// +-      to   \0  (When there is constant in the last such as 3x^2 + 1)
 
 
 //     for power look between 
 //     '^' and x
 //     ^ and \0  : special case when last term or only term is x^n, where greater than 1
     
-//     */
+//     
     
-//     int coff_pos = 0;   // position of the start of the coeffecient
-//     int coff_len = 0;  // length of the coeffecient
-//     int pow_pos = 0;   // position of the start of the power
-//     int pow_len = 0;   // length of power
+    int coff_pos = 0;   // position of the start of the coeffecient
+    int coff_len = 0;  // length of the coeffecient
+    int pow_pos = 0;   // position of the start of the power
+    int pow_len = 0;   // length of power
 
-//     // multiply p1,p2
-//     // add p1,p2
-//     // integrate p1 from 2 to 5
-//     // integrate p1
-//     // differentiate p1 at x0 or differentiate p1
-//     // subtract p1,p2
-//     // linearize p1 at x0
+    int exp_count = 0;  // represent number of exp added till now
+    int coff_count = 0;; // represent number of coff added till now
+    int i = 0;
 
-//     int i = 0;
-//     Term temp;
+    Term term_temp; // it is used to collect coefficients and exponent temporarilily
 
-//     while (i <= equation.length())
-//     {
+    //3.5x^7 - 76x^2
+    while (i <= equation.length())
+    {
         
         
-//         // variables means x,y or z
-//         if (VariableIsEncountered(equation,i))
-//         {
-//             // when power is one, we dont use '^' to show 1
-//             // if there no power, it is assumed 1, so it is here to check
-//             // see definition in "Helper.h"
-//             if (PowerIsOne(equation,i))
-//             {
-//                 temp.exponent(1);
-//                 pow.push_back(1);
-//             }
+        // variables means x,y or z
+        if (VariableIsEncountered(equation,i))
+        {
+            
     
         
-//             string temp = equation.substr(coff_pos,coff_len);
-//             remove_spaces_from_string(temp);
+            string temp = equation.substr(coff_pos,coff_len);
+            remove_spaces_from_string(temp);
 
 
         
-//       // ---------------------------------- /
-//       // for cases when the coefficient is 1 or -1 and we dont explicitly
-//       // specify it, for example: "x^2","-x^2","-   x^2","x^2 - x"
-//       // so anything between +- and x will be either "","+","-" because 
-//       // space is removed by the remove_spaces_from_string() function
+      // ---------------------------------- /
+      // for cases when the coefficient is 1 or -1 and we dont explicitly
+      // specify it, for example: "x^2","-x^2","-   x^2","x^2 - x"
+      // so anything between +- and x will be either "","+","-" because 
+      // space is removed by the remove_spaces_from_string() function
 
 
-//             if (CoeffiecientIsOne(temp))
-//                 assign_if_coefficient_is_one(temp,coff);
+            if (CoeffiecientIsOne(temp))
+                assign_if_coefficient_is_one(temp,term_temp);
 
-//             else
-//                 coff.push_back(stod(temp));
+            else
+                term_temp.coefficient(stod(temp));
 
+            coff_count++;   // means we just added a coff to term_temp object
 
+            // when power is one, we dont use '^' to show 1
+            // if there no power, it is assumed 1, so it is here to check
+            // see definition in "Helper.h"
+            if (PowerIsOne(equation,i))
+            {
+                term_temp.exponent(1);  // set exp to one
+                exp_count++;
+                 (*this).terms.push_back(term_temp);
+            }
 
-//             coff_len = -1;   // set to -1 because we need to count for the next coefficient from the beginning
-//         }
+            coff_len = -1;   // set to -1 because we need to count for the next coefficient from the beginning
+        }
 
-//         // if "^" is encountered
-//         else if (PowerIsEncountered(equation,i))
-//         {
-//             pow_pos = i + 1;    // set start position for power
-//             pow_len = -1; // start counting again
-//         }
+        // if "^" is encountered
+        else if (PowerIsEncountered(equation,i))
+        {
+            pow_pos = i + 1;    // set start position for power
+            pow_len = -1; // start counting again
+        }
 
-//         else if (SignIsEncountered(equation,i)) // it also returns true when '\0' is encountered
-//         {
-//             // DoWhenSignIsEncountered();
+        else if (SignIsEncountered(equation,i)) // it also returns true when '\0' is encountered
+        {
+            // DoWhenSignIsEncountered();
          
 
-//             string temp = equation.substr(pow_pos,pow_len);
-//             // we used stoi because power is always whole numbers
-//             pow.push_back(stoi(temp));   //stoi is string to integer
+            string temp = equation.substr(pow_pos,pow_len);
+            // we used stoi because power is always whole numbers
+            term_temp.exponent(stoi(temp));   //stoi is string to integer
+            exp_count++;
         
             
-//             pow_len = -1;     // it is set -1 because at the end of loop we increment it so -1 + 1 makes it zero for next power 
-//             coff_len = 0;     // we set it equal to zero because coeffecients can be negative and we don't want to go beyond the length
-//             coff_pos = i;   // set coeffecient initial position just after the sign
-//         }
+            pow_len = -1;     // it is set -1 because at the end of loop we increment it so -1 + 1 makes it zero for next power 
+            coff_len = 0;     // we set it equal to zero because coeffecients can be negative and we don't want to go beyond the length
+            coff_pos = i;   // set coeffecient initial position just after the sign
 
+            // since sign has been encoutered we can now put our term in to Polynomial
+            (*this).terms.push_back(term_temp);
+        }
 
-//         coff_len++;
-//         pow_len++;
-//         i++;
-//     }
+        else if (equation[i] == '\0')   // terminator is encountered means term is completeed
+        {
+            // if number of coff and exp do not match
+            // i.e no_of_exp < no_of_coff
+            // it mean an exponent is missing an we should extract it
+            // else if they do match
+            // it means we have a constant in the end
+            // lets say x^2 + 56.2x
+            if (exp_count != coff_count)
+            {
+                string temp = equation.substr(pow_pos,pow_len);
+                // we used stoi because power is always whole numbers
+                term_temp.exponent(stoi(temp));   //stoi is string to integer
+                exp_count++;
+                (*this).terms.push_back(term_temp);
 
-// } 
+            }
+
+            
+
+            
+        }
+
+        //+ 32x^n333 
+        
+
+        coff_len++;
+        pow_len++;
+        i++;
+    }
+
+} 
 
 
 
@@ -153,12 +174,58 @@ Polynomial::Polynomial(Term* values, int size)
 
 void Polynomial::display()
 {
+    // cout << "\n";
+
+    // for (int i = 0; i < terms.size(); i ++)
+    // {
+    //     // -3x^2
+    //     // basically power is non-zero 
+    //     // if (terms[i].exponent() > 0 && terms[i].coefficient() > 0) 
+    //     if (terms[i].exponent() > 0) 
+    //     {
+    //         // if coefficient is negative
+    //         if (terms[i].coefficient() < 0)
+    //         {
+    //             if (terms[i].exponent() == 1)
+    //                 cout << " - " << -terms[i].coefficient() << "x";
+    //             else
+    //                 cout << " - " << -terms[i].coefficient() << "x^" << terms[i].exponent();
+    //         }
+    //         // if coefficient is positive
+    //         else
+    //         {
+    //             if (terms[i].exponent() == 1)
+    //                 cout << " + " << terms[i].coefficient() << "x";
+    //             else
+    //                 cout << " + " << terms[i].coefficient() << "x^" << terms[i].exponent();
+    //         }
+    //     }
+
+    //     else
+    //     {
+    //          // if coefficient is negative
+    //         if (terms[i].coefficient() < 0)
+    //         {
+    //             cout << " - " << -terms[i].coefficient();
+    //         }
+    //         // if coefficient is positive
+    //         else
+    //         {
+    //             cout << " + " << terms[i].coefficient();
+    //         }
+    //     }
+
+
+    // }
+
+    // cout << "\n";
+
+
     cout << "\n";
 
     for (int i = 0; i < terms.size(); i ++)
     {
-        
-        cout << " " << terms[i].coefficient() << "x^" << terms[i].exponent();
+        terms[i].display();
     }
 
     cout << "\n";
@@ -189,20 +256,33 @@ double Polynomial::evaluate(double x0)
 void Polynomial::test()
 {
     cout << "coff: ";
+
     for (int i = 0; i < terms.size(); i ++)
-    {
         cout << terms[i].coefficient() << " ";
-    }
 
     cout << endl << "exponent: " ;
 
     for (int i = 0; i < terms.size(); i ++)
-    {
         cout << terms[i].exponent() << " ";
-    }
+
 }
 
-Polynomial Polynomial::take_derivative()
+int Polynomial::degree()
+{
+    // to find the degree of the polynomial, find maximum exponent in terms arrray
+
+    int max = -1;
+
+    for (int i = 0; i < this->terms.size(); i ++)
+    {
+        if (max < terms[i].exponent())
+            max = terms[i].exponent();
+    }
+
+    return max;
+}
+
+Polynomial Polynomial::differentiate()
 {
 
    Polynomial p_prime;  // p'(x)
@@ -220,6 +300,20 @@ Polynomial Polynomial::take_derivative()
    }
 
     return p_prime; // returns the object
+}
+
+Polynomial Polynomial::integrate()
+{
+    Polynomial P;  // Anti-derivative
+
+   // for each term
+   for (int i = 0; i < terms.size(); i ++)
+   {
+        Term temp = terms[i].integrate();   // differentiate individual terms and add to p_prime terms array
+        P.terms.push_back(temp);  // add the term to the last of the array
+   }
+
+    return P; // returns the object
 }
 
 Polynomial Polynomial::operator*(Polynomial &p2)
@@ -242,4 +336,188 @@ Polynomial Polynomial::operator*(Polynomial &p2)
     return p3;
 }
 
+Polynomial Polynomial::operator+(Polynomial &p2)
+{
 
+    Polynomial p3;
+
+   /* Concatenate Both Term Together */
+
+// --------------------------------------------------
+    for (int i = 0; i < this->terms.size(); i ++)
+        p3.terms.push_back(this->terms[i]);
+
+    for (int j = 0; j < p2.terms.size(); j ++)
+        p3.terms.push_back(p2.terms[j]);
+// ---------------------------------------------------
+
+    
+
+    vector<int> temp;   // it will be used to store indices of the elements having same exponent
+
+    // iterate on all the terms
+    for (int i = 0; i < p3.terms.size(); i ++)
+    { 
+        
+        // store the current exponent in some variable  
+        int exp = p3.terms[i].exponent();
+
+        // compare ith term exponent with all other term's exponent
+        for (int j = i + 1; j < p3.terms.size(); j ++)
+        {
+                // if they happen to match add the terms and store the result back in the ith term, this way we will have the added term at ith position
+                if (exp == p3.terms[j].exponent())
+                {
+                    p3.terms[i] = p3.terms[i] + p3.terms[j];
+                    temp.push_back(j);  // store the index in temp
+                }
+        }
+
+        // iterate through the temp array and erase terms at those indexes
+        for (int k = 0; k < temp.size(); k ++)
+        {
+            p3.terms.erase(p3.terms.begin() + temp[k]);
+
+            // since we delete an element, all the indices on the right will be shift to lefy by 1 unit so we will decrement every index by 1
+            for (int l = k + 1; l < temp.size(); l++)
+                temp[l] = temp[l] - 1;
+            // end for
+        
+        }
+
+        temp.clear();   // clear the array for a different exponent
+    }
+
+    return p3;
+}
+
+
+void Quadratic::calculateRoots()
+{
+    // three cases in quadratic equations
+    // case 1 : b^2 - 4ac > 0
+    // case 2 : b^2 - 4ac < 0
+    // case 3 : b^2 - 4ac = 0
+    double x1;
+    double x2; 
+
+    // case 1
+    if (discriminant() > 0) 
+    {
+        cout << "Here\n";
+        roots = new Root[2];
+
+        x1 = (b + sqrt(discriminant()) / 2*a); 
+        x2 = (b - sqrt(discriminant()) / 2*a); 
+
+        roots[0] = Root(x1,0);
+        roots[1] = Root(x2,0);
+
+        roots_count = 2;
+    }
+
+    // case 2
+    else if (discriminant() < 0)
+    {
+        roots = new Root[2];
+
+        double _real = -b / 2*a;
+        double _imag = sqrt(discriminant()); // i multiplied a minus because want the magnitude
+
+        roots[0] = Root(_real,_imag);
+        roots[1] = Root(_real,-_imag);
+
+        roots_count = 2;
+
+    }
+
+    // case 3
+    else
+    {
+        roots = new Root;
+
+        double _real = -b/2*a;
+        *roots = Root(_real,0);
+
+        roots_count = 1;
+    }
+
+}
+
+void Root::display()
+{
+    if (imag > 0)
+        std::cout << real << " + " << imag << "i" << std::endl;
+    else    
+        std::cout << real << " - " << imag << "i" << std::endl;
+}
+
+void Quadratic::displayRoots()
+{
+    for (int i = 0; i < roots_count; i ++)
+    {
+        roots[i].display();
+    }
+}
+
+Quadratic::Quadratic(Term* _terms,int size): Polynomial(_terms,size),roots(NULL),roots_count(0)
+{
+    // by default all a,b and c should be zero, so if one of them is not found it is set to zero by default
+    this->a = 0; this->b = 0; this->c = 0;
+    // Iterate through each element and find corressponding coefficient
+    // purpose of this is to extract coefficients corresspoding to a,b and c
+    for (int i = 0; i < terms.size(); i ++)
+    {
+        switch(terms[i].exponent())
+        {
+            case 2:
+                a = terms[i].exponent(); 
+                break;
+            case 1:
+                b = terms[i].exponent();
+                break;
+            case 0:
+                c = terms[i].exponent();
+                break;
+            default:
+                break;
+        }
+    
+    }
+}
+
+
+/*Polynomial Addition Logic : Pseudocode
+
+Assume we are adding p1 and p2 together to make p3
+
+for i = 0 to i = p3.terms.size() - 1:
+    for j = i + 1 to j = p3.terms.size() - 1:
+        if p3's ith term exponent = p3's jth term exponent:
+            add p3's jth term with p3's ith term and store it again in p3's ith term
+            store the index with exponent matched and save it in some array
+        end if
+    end for
+
+    for k = 0 to k = temp.size() - 1:
+        erase p3's temp[kth] term
+
+        for l = k + 1 to l = temp.size() - 1:
+            since  we deleted an element, every element on the right must shift left by one so we will decrement the index by 1 for each element
+            temp[l] = temp[l] - 1
+        end for
+    end for
+
+    temp.clear() :: clear array
+end for
+
+Approach:
+
+Store the indices (plural of index) of all the elements that can be added
+then add those terms to the first occurence of the the and delete all others with
+the help of the indices we stored. we will store indices in a vector<int>
+we will also need to shift indices because deleting an element will cause 
+the polynomial to shrink hence each indices will be shift by one to sync with old position
+
+
+*/
