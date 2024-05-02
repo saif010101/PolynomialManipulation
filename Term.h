@@ -2,7 +2,6 @@
 #include <vector>
 #include <string>
 
-
 class Term
 {
     private:
@@ -24,7 +23,9 @@ class Term
         //functions
         Term differentiate();
         Term integrate();
+        void display();
 
         // operators
         Term operator* (Term& p2_term);	 
+        Term operator+ (Term& p2_term);	
 };
