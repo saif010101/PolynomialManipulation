@@ -1,4 +1,4 @@
-/*Title: Mathematical Operations on Polynomials and Application of Calculus*/
+/*Title: Mathematical Operations on Polynomials with Application of Calculus*/
 
 #include <iostream>
 #include "Polynomial.h"
@@ -8,13 +8,15 @@ using namespace std;
 
 int main()
 {
-   Term terms[3] = {Term(3,2),Term(4,1),Term(1,0)};
 
-   Polynomial p1 = Polynomial(terms,3);
-   Polynomial p2 = p1.take_derivative();
+   Term terms1[3] = {Term(9,2),Term(3,1),Term(8,2)};
+   Term terms2[2] = {Term(5,3),Term(5,4)};
 
-   p1.test();
-   p2.test();
-     
+   Polynomial p1(terms1,3);
+   Polynomial p2(terms2,2);
+
+   cout << "Test\n";
+   Polynomial p3 = p1 + p2;
+   p3.display();
    return 0;
 }
