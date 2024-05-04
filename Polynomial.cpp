@@ -174,53 +174,6 @@ Polynomial::Polynomial(string equation)
 
 void Polynomial::display()
 {
-    // cout << "\n";
-
-    // for (int i = 0; i < terms.size(); i ++)
-    // {
-    //     // -3x^2
-    //     // basically power is non-zero 
-    //     // if (terms[i].exponent() > 0 && terms[i].coefficient() > 0) 
-    //     if (terms[i].exponent() > 0) 
-    //     {
-    //         // if coefficient is negative
-    //         if (terms[i].coefficient() < 0)
-    //         {
-    //             if (terms[i].exponent() == 1)
-    //                 cout << " - " << -terms[i].coefficient() << "x";
-    //             else
-    //                 cout << " - " << -terms[i].coefficient() << "x^" << terms[i].exponent();
-    //         }
-    //         // if coefficient is positive
-    //         else
-    //         {
-    //             if (terms[i].exponent() == 1)
-    //                 cout << " + " << terms[i].coefficient() << "x";
-    //             else
-    //                 cout << " + " << terms[i].coefficient() << "x^" << terms[i].exponent();
-    //         }
-    //     }
-
-    //     else
-    //     {
-    //          // if coefficient is negative
-    //         if (terms[i].coefficient() < 0)
-    //         {
-    //             cout << " - " << -terms[i].coefficient();
-    //         }
-    //         // if coefficient is positive
-    //         else
-    //         {
-    //             cout << " + " << terms[i].coefficient();
-    //         }
-    //     }
-
-
-    // }
-
-    // cout << "\n";
-
-
     cout << "\n";
 
     for (int i = 0; i < terms.size(); i ++)
@@ -316,6 +269,23 @@ Polynomial Polynomial::integrate()
     return P; // returns the object
 }
 
+double Polynomial::integrate(double a, double b)
+{
+    // calculates anti-derivative and evaluate P at both ends
+    // using FTOC part 2
+    Polynomial P = (*this).integrate();
+    return (P.evaluate(b) - P.evaluate(a));  
+
+}
+
+double Polynomial::differentiate(double x0)
+{
+    // calculates slope of the tangent line to the curve (*this) at point x = x0
+    // and evaluates the derivative at x0
+    Polynomial P_prime = (*this).differentiate(); // P = anti-derivative
+    return P_prime.evaluate(x0);
+}
+
 Polynomial Polynomial::operator*(Polynomial &p2)
 {
     // (*this) means p1 or polynomial 1
@@ -332,6 +302,8 @@ Polynomial Polynomial::operator*(Polynomial &p2)
             p3.terms.push_back(p3_term);
         }
     }
+
+    // use addition wali logic to solve the same exponent problem
 
     return p3;
 }
@@ -391,6 +363,20 @@ Polynomial Polynomial::operator+(Polynomial &p2)
     return p3;
 }
 
+Polynomial Polynomial::operator-(Polynomial p2)
+{
+    // multiply negative with each coefficient of right side
+    // we used pass by value because we did not wanted to change
+    // p2's original values
+    for (int i = 0; i < p2.terms.size(); i ++)
+    {
+        int exp = p2.terms[i].coefficient();
+        p2.terms[i].coefficient(-exp);
+    }
+
+     return ((*this) + p2);      // p1 + p2
+    //return p2;
+}
 
 void Quadratic::calculateRoots()
 {
@@ -422,7 +408,7 @@ void Quadratic::calculateRoots()
         roots = new Root[2];
 
         double _real = -b / 2*a;
-        double _imag = sqrt(discriminant()); // i multiplied a minus because want the magnitude
+        double _imag = sqrt(-discriminant()); // i multiplied a minus because want the magnitude
 
         roots[0] = Root(_real,_imag);
         roots[1] = Root(_real,-_imag);
@@ -434,7 +420,7 @@ void Quadratic::calculateRoots()
     // case 3
     else
     {
-        roots = new Root;
+        roots = new Root[1];
 
         double _real = -b/2*a;
         *roots = Root(_real,0);
