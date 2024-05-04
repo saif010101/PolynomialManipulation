@@ -20,14 +20,19 @@ class Polynomial
         void display(); // prints polynomial
         double evaluate(double x0); // evaluates polynomial at x = x0
         void test();
-        int degree();  // degree of polynomial
+        int degree();  // degree of polynomial  
+
+        //   
+        double integrate(double from,double to); // area under the curve
+        double differentiate(double x0); // slope of the tangent line to the curve (*this) at point x = x0   
+
+
+        // operations
         Polynomial differentiate();
         Polynomial integrate();
-
-
-        // operators
         Polynomial operator* (Polynomial& p2);
         Polynomial operator+ (Polynomial& p2);
+        Polynomial operator- (Polynomial p2);
 };
 
 class Root
@@ -78,7 +83,7 @@ class Quadratic: public Polynomial
 
         // destructor
         ~Quadratic()
-         {
+         {           
             delete[] roots;
          }
 
