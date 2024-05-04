@@ -5,7 +5,7 @@ using namespace std;
 double power(double base,int exp);
 bool PowerIsOne(string equation,int index);
 bool CoeffiecientIsOne(string temp);
-void assign_if_coefficient_is_one(string temp,vector<double>&);
+void assign_if_coefficient_is_one(string temp,Term tmp);
 bool VariableIsEncountered(string equation,int index);
 bool PowerIsEncountered(string equation,int index);
 bool SignIsEncountered(string equation,int index);
@@ -102,12 +102,12 @@ bool CoeffiecientIsOne(string temp)
     return false;
 }
 
-void assign_if_coefficient_is_one(string temp, vector<double> &coff)
+void assign_if_coefficient_is_one(string temp,Term tmp)
 {
-    if (temp == "")
-        coff.push_back(1);
-    else if (temp == "-")
-        coff.push_back(-1);
-    else if (temp == "+")
-        coff.push_back(1);
+    // if (temp == "")
+    //     coff.push_back(1);
+    // else if (temp == "-")
+    //     coff.push_back(-1);
+    // else if (temp == "+")
+    //     coff.push_back(1);
 }
