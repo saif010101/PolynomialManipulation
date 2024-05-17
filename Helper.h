@@ -1,15 +1,21 @@
 #include <iostream>
+#include <cmath>
 
 using namespace std;
 
 double power(double base,int exp);
 bool PowerIsOne(string equation,int index);
 bool CoeffiecientIsOne(string temp);
-void assign_if_coefficient_is_one(string temp,Term tmp);
+void assign_if_coefficient_is_one(string temp,Term& tmp);
 bool VariableIsEncountered(string equation,int index);
 bool PowerIsEncountered(string equation,int index);
 bool SignIsEncountered(string equation,int index);
+bool NoVariableFound(string equation,int index);
 void remove_spaces_from_string(string& str); // this function serves an important purpose
+double newtonMethod(Cubic& p,double ini_guess);
+void arrange (double& r1,double& r2);
+int countWords(string command);
+
 
 
 double power(double base,int exp)
@@ -51,7 +57,7 @@ bool PowerIsEncountered(string equation, int index)
 bool SignIsEncountered(string equation, int index)
 {
     // indicate whenver a plus or minus sign is encountered
-    if (equation[index] == '+' || equation[index] == '-' || equation[index] == '\0')
+    if (equation[index] == '+' || equation[index] == '-')
     {
         return true;
     }
@@ -79,6 +85,51 @@ void remove_spaces_from_string(string& str)
 
 }
 
+
+void arrange(double &r1, double &r2)
+{
+    // purpose of this function is to arrange r1 and r2 such that
+    // r1 = min(r1,r2) , r2 = max(r1,r2)
+    // only swap if root 1 is greater than root 2
+    
+    if (r1 > r2)
+    {
+        double temp = r1;
+        r1 = r2;
+        r2 = temp;
+    }
+      
+}
+
+
+
+double newtonMethod(Cubic& p, double ini_guess)
+{
+    // initial guess for the newton method
+    double x0 = ini_guess;
+
+    while (true)
+    {
+        /* Formula : Xn+1 = Xn - f(Xn) / f'(Xn) */
+        x0 = x0 - (p.evaluate(x0) / p.differentiate().evaluate(x0));
+
+        double value = p.evaluate(x0);
+
+        if (fabs(value) < pow(10,-8))   // error = 0.00000001
+        {
+            // basically anything if anything is as small as less than 10^-6 then 
+            // consider it as zero
+            if (fabs(x0) < pow(10,-6))  // difference = 0.000001
+            {
+                return 0.0;
+            }
+
+            return x0;
+        }
+            
+    }
+}
+
 bool PowerIsOne(string equation,int index)
 {
     // check if next character to variable is power operator or not
@@ -102,12 +153,28 @@ bool CoeffiecientIsOne(string temp)
     return false;
 }
 
-void assign_if_coefficient_is_one(string temp,Term tmp)
+void assign_if_coefficient_is_one(string temp,Term& tmp)
 {
-    // if (temp == "")
-    //     coff.push_back(1);
-    // else if (temp == "-")
-    //     coff.push_back(-1);
-    // else if (temp == "+")
-    //     coff.push_back(1);
+    if (temp == "")
+      tmp.coefficient(1);
+    else if (temp == "-")
+      tmp.coefficient(-1);
+    else if (temp == "+")
+      tmp.coefficient(1);
+}
+
+bool NoVariableFound(string equation, int index)
+{
+    bool result = false;
+
+    while (equation[index] != '\0')
+    {
+        if (equation[index] == 'x')
+        {
+            return false;
+        }
+        index++;
+    }
+
+    return true;
 }
