@@ -47,14 +47,19 @@ void Term::display()
         // if a term's exponent is non-zero
         if (exp > 0)
         {
-            if (coff > 0 && exp == 1)   // Note 2 : if exponent is one it means x is raised to the power one which we don;t usually write so that's why no '^' is used
+            if (coff == 1 && exp > 1)
+                cout << " + " << "x^" << exp; // See Note 1 to know why we multiplied a minus 
+            else if (coff == 1 && exp == 1)
+                cout << " + x"; // See Note 1 to know why we multiplied a minus  
+            else if (coff > 0 && exp == 1)   // Note 2 : if exponent is one it means x is raised to the power one which we don;t usually write so that's why no '^' is used
                 cout << " + " << coff << "x";
             else if (coff < 0 && exp == 1)
                 cout << " - " << -coff << "x";  // // Note 1 : we multiplied a minus because we are printing a " - " our self for extra space before coefficient
             else if (coff > 0 && exp > 1)
                 cout << " + " << coff << "x^" << exp;  
             else if (coff < 0 && exp > 1)
-                cout << " - " << -coff << "x^" << exp; // See Note 1 to know why we multiplied a minus           
+                cout << " - " << -coff << "x^" << exp; // See Note 1 to know why we multiplied a minus      
+                   
         }
 
         else // if a term's exponent is zero i.e it is a constant term
@@ -62,7 +67,7 @@ void Term::display()
             
             if (coff > 0)
                 cout << " + " << coff;
-            else // if (coff < 0)
+            else if (coff < 0)
                 cout << " - " << -coff; // see note 1
         }
 
