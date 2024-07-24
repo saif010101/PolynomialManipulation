@@ -22,7 +22,6 @@ and provides basic arthmetic and calculus operations on polynomials.
 
 ### Project Members :
 Muhammad Saif (23p-0512)\
-Afrasiab Shahid (23p-0585)\
 Wajid Ali (23p-0606)
 
 ### Course Details :
