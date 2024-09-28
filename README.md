@@ -3,6 +3,10 @@ Assalaam - o - Alaikum,
 This project was made as a semester project for the course, Object Oriented Programming. This project provides user with a command line menu
 and provides basic arthmetic and calculus operations on polynomials.
 
+**Data Structures Used**
+- C++ vector was hold the terms of the polynomial
+- Addition Logic is also array-based
+
 ### Commands List :
 
 **new** `[polynomial_name]`	           *-- prompt user to add a new polynomial*\
