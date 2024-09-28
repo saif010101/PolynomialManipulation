@@ -7,7 +7,7 @@ and provides basic arthmetic and calculus operations on polynomials.
 
 **new** `[polynomial_name]`	           *-- prompt user to add a new polynomial*\
 **integrate** `[polynomial_name]`		    *-- calculates anti-derivative of polynomial*\
-**integrate** `[polynomial_name]` from [a] to [b]   -- calculates area from a to b\ 
+**integrate** `[polynomial_name]` from [a] to [b]   *-- calculates area from a to b*\
 **diff** `[polynomial_name]`		  *-- calculates derivate* \
 **diff** `[polynomial_name]` at [x0]	*-- calculates the value of derivative at x* \
 **roots of** `[polynomial_name]`	-- *calculate roots of polynomial (cubic and lower only)*\
