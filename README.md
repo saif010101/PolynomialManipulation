@@ -4,8 +4,7 @@ This project was made as a semester project for the course, Object Oriented Prog
 and provides basic arthmetic and calculus operations on polynomials.
 
 **Data Structures Used**
-- C++ vector was hold the terms of the polynomial
-- Addition Logic is also array-based
+- C++ vector<type> container.
 
 ### Commands List :
 
