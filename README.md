@@ -30,7 +30,7 @@ Wajid Ali (23p-0606)
 ### Course Details :
 **Course** : Object Oriented Programming (CS1004)\
 **Instructor** : Dr. Qasim Jan\
-**Institute** : National University of Science and Technology, Peshawar.
+**Institute** : National University of Computer and Emerging Sciences (NUCES) , Peshawar.
 
 
 
